@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-# Params: segment_size, num_cols
+# Params: segment_size (int), num_cols (int)
 generateY () {
     if [[ $# -lt 2 ]]; then
         return 1
@@ -42,6 +42,53 @@ generateY () {
 
         echo $line
     done
+}
+
+# Params: desired size (int), line (str)
+appendToSize () {
+    if [[ $# -lt 2 ]]; then
+        return 1
+    fi
+
+    final_size="$1"
+    line="$2"
+
+    line_size=$( echo $line | wc -m )
+    line_size=$(( $line_size - 1 ))
+
+    for (( ii = 0; ii < $final_size - $line_size; ii++ )); do
+        line="${line}_"
+    done
+
+    echo $line
+}
+
+# Params: size (int), Y (multiple strings)
+makeYToSize () {
+    if [[ $# -lt 2 ]]; then
+        return 1
+    fi
+
+    size="$1"
+    ystrings="$2"
+
+    echo "$ystrings" | while read line
+    do
+        appendToSize $size $line
+    done
+}
+
+# Params: offset (int), line (str)
+offsetYLine () {
+    if [[ $# -lt 2 ]]; then
+        return 1
+    fi
+
+    offset="$1"
+    line="$2"
+
+    # short_line=$( cut -c )
+
 
 }
 
@@ -58,9 +105,17 @@ for (( h = 0; h < $N; h++ )); do
 
     # echo "$num_cols_main $segment_size_main"
 
-    generateY $segment_size_main $num_cols_main
+    currentY=$( generateY $segment_size_main $num_cols_main )
+
+    echo "$currentY"
+
+    makeYToSize $cols "$currentY"
+
+    # echo "$bigY"
 
 done
+
+# ==============================================================================
 
 # (($num_cols / 2) - 1) - $segment_size - first position of left arm
 # (($num_cols / 2) - 1) + $segment_size - first position of right arm
