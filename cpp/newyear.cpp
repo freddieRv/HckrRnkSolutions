@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <map>
 
 using namespace std;
 
@@ -7,6 +8,14 @@ using namespace std;
 string ltrim(const string &);
 string rtrim(const string &);
 vector<string> split(const string &);
+
+void printMap(map<int, int> m) {
+    auto iter = m.begin();
+    while (iter != m.end()) {
+        printf("%d\t==>\t%d\n", iter->first, iter->second);
+        iter++;
+    }
+}
 
 /*
  * Complete the 'minimumBribes' function below.
@@ -17,36 +26,48 @@ vector<string> split(const string &);
 void minimumBribes(vector<int> q) {
     int total_bribes = 0;
     int single_bribe = 0;
+    map<int, int> bribes;
 
     for (size_t i = 0; i < q.size(); i++) {
         if (q[i] > (i + 1)) {
             single_bribe = q[i] - (i + 1);
-
-            single_bribe = abs(single_bribe);
+            bribes[q[i]] = single_bribe;
+            total_bribes += single_bribe;
 
             if (single_bribe > MAX_BRIBES) {
                 printf("Too chaotic\n");
                 return;
             }
         } else if (q[i] < (i + 1)) {
-            single_bribe = 0;
+            single_bribe = (i + 1) - q[i];
 
-            if (i + 1 < q.size()) {
-                for (size_t j = (i + 1); j <  q.size(); j++) {
-                    if (q[j] < q[i]) {
-                        single_bribe++;
-                    }
-                }
+
+            auto range_iter = bribes.equal_range(q[i]);
+            auto& greater_iter = range_iter.second;
+
+            while (greater_iter != bribes.end()) {
+                single_bribe--;
+                greater_iter++;
             }
 
-            if (single_bribe > MAX_BRIBES) {
-                printf("Too chaotic\n");
-                return;
+            // map<int, int>::iterator it = bribes.begin();
+            // while (it != bribes.end()) {
+            //     if (it->first > q[i]) {
+            //         single_bribe--;
+            //     }
+            //     it++;
+            // }
+
+            if (single_bribe > 0) {
+                total_bribes += single_bribe;
+                bribes[q[i]] = single_bribe;
             }
         }
 
-        total_bribes += single_bribe;
+        printf("Bribe for ID %d: %d\n", q[i], single_bribe);
     }
+
+    printMap(bribes);
 
     printf("%d\n", total_bribes);
 }
