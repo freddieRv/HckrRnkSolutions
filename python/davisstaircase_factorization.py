@@ -9,22 +9,22 @@ import sys
 def runStair(n, posibleSteps, currentPath):
     pathsTaken = 0
 
+    # print("Current path: ", currentPath)
+
     for i in range(0, len(posibleSteps), 1):
         no_steps = (n - sum(currentPath)) // posibleSteps[i]
-
         posiblePath = currentPath + [posibleSteps[i]] * no_steps
         reminder = (n - sum(posiblePath)) % posibleSteps[i]
 
         # print("Posible path: ", posiblePath)
-        print("Reminder: ", reminder)
+        # print("Reminder: ", reminder)
 
-        if sum(posiblePath) < n:
-
+        if sum(posiblePath) < n and no_steps > 0:
+            # print("recursing")
             if reminder != 0 and no_steps > 1:
                 removed_steps = 1
-
                 while removed_steps < no_steps:
-                    print("Special case!")
+                    # print("Special case!")
                     pathsTaken += runStair(n, posibleSteps[i+1:], currentPath + [posibleSteps[i]] * removed_steps)
                     removed_steps += 1
 
@@ -32,11 +32,16 @@ def runStair(n, posibleSteps, currentPath):
 
         elif sum(posiblePath) == n:
             if len(set(posiblePath)) > 1:
-
                 # This needs fixing - is also not factorial(len(posiblePath))
                 pathsTaken += len(posiblePath)
                 print("Adding SMTH for path: ", posiblePath)
             else:
+                removed_steps = 1
+                while removed_steps < no_steps:
+                    # print("Special case 2!")
+                    pathsTaken += runStair(n, posibleSteps[i+1:], currentPath + [posibleSteps[i]] * removed_steps)
+                    removed_steps += 1
+
                 pathsTaken += 1
                 print("Adding 1 for path: ", posiblePath)
 
@@ -47,4 +52,4 @@ def stepPerms(n):
     pathsTaken = runStair(n, posibleSteps, [])
     return pathsTaken % (pow(10, 10) + 7)
 
-print(stepPerms(7))
+print(stepPerms(36))
