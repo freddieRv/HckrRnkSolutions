@@ -15,6 +15,7 @@ def runStair(n, posibleSteps, currentPath):
             pathsTaken += runStair(n, posibleSteps, currentPath + [step])
         elif count == n:
             pathsTaken += 1
+            break
 
     return pathsTaken
 
@@ -25,4 +26,4 @@ def stepPerms(n):
     return stepsTaken % (pow(10, 10) + 7)
 
 
-print(stepPerms(27))
+print(stepPerms(36))
