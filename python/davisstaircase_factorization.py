@@ -32,9 +32,24 @@ def runStair(n, posibleSteps, currentPath):
 
         elif sum(posiblePath) == n:
             if len(set(posiblePath)) > 1:
-                # This needs fixing - is also not factorial(len(posiblePath))
-                pathsTaken += len(posiblePath)
-                print("Adding SMTH for path: ", posiblePath)
+                toadd = 0
+
+                if len(set(posiblePath)) == len(posiblePath):
+                    toadd = math.factorial(len(posiblePath))
+                else:
+                    stepsCount = {}
+                    for step in posiblePath:
+                        stepsCount[step] = 1 + stepsCount.get(step, 0)
+
+                    print(stepsCount)
+
+                    m = len(posiblePath)
+                    for count in stepsCount.values():
+                        toadd += math.factorial(m) // (math.factorial(count) * math.factorial(m - count))
+
+                    toadd //= 2
+
+
             else:
                 removed_steps = 1
                 while removed_steps < no_steps:
@@ -52,4 +67,5 @@ def stepPerms(n):
     pathsTaken = runStair(n, posibleSteps, [])
     return pathsTaken % (pow(10, 10) + 7)
 
-print(stepPerms(36))
+#print(stepPerms(36))
+print(stepPerms(8))
